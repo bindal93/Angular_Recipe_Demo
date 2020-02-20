@@ -25,7 +25,9 @@ export class RecipeService implements OnInit {
   ngOnInit() {
 
   }
-
+  getRecipe(id:number){
+    return this.recipes[id];
+  }
   addIngredientsToShoppingList(ingredient:Ingredient[]){
     this.slService.addIngredients(ingredient);
   }

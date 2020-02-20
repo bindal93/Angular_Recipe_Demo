@@ -8,6 +8,7 @@ import { RecipeService } from './recipe.service';
   styleUrls: ['./recipes.component.css']
 })
 export class RecipesComponent implements OnInit {
+  selectedRecipe: Recipe;
 
   constructor(private recipeService: RecipeService) { }
 
@@ -17,5 +18,5 @@ export class RecipesComponent implements OnInit {
       this.selectedRecipe = recipe
     });
   }
-  selectedRecipe: Recipe;
+
 }
