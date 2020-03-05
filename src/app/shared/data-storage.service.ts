@@ -12,7 +12,7 @@ export class DataStorageService {
 
   storeRecipes() {
     const recipes = this.recipeService.getRecipes();
-    this.http.put('https://ng-course-recipe-book-65f10.firebaseio.com/recipes.json', recipes)
+    this.http.put('https://ng-recipe-course-3fd95.firebaseio.com/recipes.json', recipes)
       .subscribe(response => {
         console.log(response);
       },
@@ -22,7 +22,7 @@ export class DataStorageService {
       );
   }
   fetchRecipes() {
-    return this.http.get<Recipe[]>('https://ng-course-recipe-book-65f10.firebaseio.com/recipes.json')
+    return this.http.get<Recipe[]>('https://ng-recipe-course-3fd95.firebaseio.com/recipes.json')
       .pipe(map(recipes => {
         return recipes.map(recipe => {
           return { ...recipe, ingredients: recipe.ingredients ? recipe.ingredients : [] };
