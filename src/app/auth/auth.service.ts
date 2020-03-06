@@ -1,21 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { AuthResponseData } from './authResponseData.model';
-import { catchError } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { throwError, BehaviorSubject } from 'rxjs';
+import { User } from './user.model';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+
+  user = new BehaviorSubject<User>(null);
+  
   private API_KEY: string = "AIzaSyBvKng5n8yt9B7mS1cCkCygISUR5nKcalY";
   constructor(private http: HttpClient) { };
 
   signup(email: string, password: string) {
     return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + this.API_KEY,
       { email: email, password: password, returnSecureToken: true })
-      .pipe(catchError(this.handleError));
+      .pipe(catchError(this.handleError), tap(resData => {
+        this.handleAuthentication(resData.email, resData.localId, resData.idToken, +resData.expiresIn);
+      }));
     // .pipe(catchError(errorResp => {
     //   let errorMessage = 'An unknown error occured !!';
     //   if (!errorResp.error || !errorResp.error.error) {
@@ -34,7 +40,14 @@ export class AuthService {
   login(email: string, password: string) {
     return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + this.API_KEY,
       { email: email, password: password, returnSecureToken: true })
-      .pipe(catchError(this.handleError));
+      .pipe(catchError(this.handleError), tap(resData => {
+        this.handleAuthentication(resData.email, resData.localId, resData.idToken, +resData.expiresIn);
+      }));
+  }
+  private handleAuthentication(email: string, localId: string, idToken: string, expiresIn: number) {
+    const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
+    const user = new User(email, localId, idToken, expirationDate);
+    this.user.next(user);
   }
   private handleError(errorRes: HttpErrorResponse) {
     let errorMessage = 'An unknown error occured !!';
