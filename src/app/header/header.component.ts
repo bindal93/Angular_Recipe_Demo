@@ -14,7 +14,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(private dataStorageService: DataStorageService, private authService: AuthService) { }
   ngOnInit() {
     this.userSub = this.authService.user.subscribe(user=>{
-      this.isAuthenticated=!user? false: true;
+      this.isAuthenticated=!!user;
     });
   }
   onSaveData() {
@@ -24,6 +24,9 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.dataStorageService.fetchRecipes().subscribe(() => { }, error => {
       alert("error occured while fetching the data " + error.message);
     });
+  }
+  onLogout(){
+    this.authService.logout();
   }
   ngOnDestroy() {
     this.userSub.unsubscribe();
