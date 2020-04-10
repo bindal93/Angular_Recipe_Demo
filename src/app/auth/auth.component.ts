@@ -14,10 +14,9 @@ export class AuthComponent implements OnInit {
   isLoginMode: boolean = true;
   isLoading: boolean = false;
   error: string = null;
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
   }
@@ -32,13 +31,14 @@ export class AuthComponent implements OnInit {
     if (this.isLoginMode) {
       authObs = this.authService.login(email, password);
     } else {
-      authObs = this.authService.signup(email, password)
+      authObs = this.authService.signup(email, password);
     }
-    authObs.subscribe(resData => {
-      console.log(resData);
-      this.isLoading = false;
-      this.router.navigate(['/recipes']);
-    },
+    authObs.subscribe(
+      resData => {
+        console.log(resData);
+        this.isLoading = false;
+        this.router.navigate(['/recipes']);
+      },
       errorMessage => {
         console.log(errorMessage);
         this.error = errorMessage;
@@ -46,5 +46,8 @@ export class AuthComponent implements OnInit {
       }
     );
     form.reset();
+  }
+  onHandleError() {
+    this.error = null;
   }
 }
